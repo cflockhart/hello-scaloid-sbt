@@ -6,7 +6,8 @@ This contains minimum code as possible; therefore easy to run, examine and exten
 
 Prerequisites
 -------------
-* sbt 0.13.0 or above
+* sbt 0.13.5 or above
+* Android build tools 20.0.0 or above
 * Android SDK
   - Both SDK Level 10 and the most recent version should be installed.
 
@@ -24,7 +25,7 @@ Tips for faster development iteration
 -------------------------------------
 In sbt, `~` is a prefix that repeatedly runs the command when the source code is modified.
 
-    ~ android:run
+    ~run
     
 This sbt command schedules to execute compile-package-deploy-run process after you save the edited source code.
 Compiling and packaging runs incrementally, so this iteration takes about only few seconds.
@@ -37,18 +38,33 @@ Using Eclipse
     $ sbt eclipse
 
 Using IntelliJ IDEA
--------------------    
-    
-    $ sbt gen-idea
+-------------------
 
-Two more steps are needed for IDEA:
+### Generate the local.properties file
 
- * Project Structure -> Project -> in Project SDK section, select proper Android SDK
- * Porject Structure -> Modules -> add Android facet to your project module
+     $ android update project -p . # in the root of the project
 
-We do not recommend to use IDEA's own Android build system, because proguard settings are complicated and not fast.
-Use commands from [android-sdk-plugin for sbt](https://github.com/pfn/android-sdk-plugin).
-It runs simple and fast.
+### Plugins
+
+Make sure the Scala & SBT plugins are installed in IntelliJ IDEA
+
+### Import the SBT project
+
+ File -> Import Project... -> select project root folder -> OK -> Import project from external model -> SBT Project
+-> Check "Use auto-import" & for Project SDK, select an Android API platform -> Finish. Choose to configure the
+android project when IDEA asks.
+
+Edit the generated run configuration. Remove the 'Before launch: Make' then add a new SBT command `android:package-debug` then tab out or it
+will not save, then click OK then OK.
+
+You now should be able to run and debug from the run configuration like normal.
+
+### Troubleshooting IntelliJ
+
+`Local path doesn't exist.` when Intellij tries to deploy the apk.
+ 
+File -> Project Structure -> Modules -> hello-scaloid-sbt -> Android -> Packaging -> Then choose the APK Path for
+the apk. For this project it should be in .../bin/hello-scaloid-sbt-debug.apk
 
 Troubleshooting
 ---------------
